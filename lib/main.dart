@@ -85,6 +85,7 @@ class _SpotifyConnectAppState extends State<SpotifyConnectApp> {
       value: _authBloc,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData.dark(),
         title: 'Spotify Connect',
         home: const AuthRouter(),
       ),
