@@ -4,11 +4,9 @@ import 'core/injection/injection.dart';
 import 'feature/spotify_connect/presentation/bloc/auth/auth_bloc.dart';
 import 'feature/spotify_connect/presentation/bloc/auth/auth_event.dart';
 import 'feature/spotify_connect/presentation/bloc/auth/auth_state.dart';
+import 'feature/spotify_connect/presentation/screens/home_screen.dart';
+import 'feature/spotify_connect/presentation/screens/login_screen.dart';
 import 'feature/spotify_connect/presentation/screens/splash.dart';
-
-
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:app_links/app_links.dart';
 import 'dart:async';
 
