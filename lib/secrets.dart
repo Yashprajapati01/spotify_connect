@@ -2,7 +2,7 @@
 /// https://aistudio.google.com/apikey
 ///and to get detailed explanation , visit readme.
 
-class Secrets{
+class Secrets {
   static String clientID = '';
   static String geminiKey = '';
 }

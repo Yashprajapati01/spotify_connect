@@ -18,10 +18,7 @@ class PlaylistLoaded extends PlaylistState {
   final UserProfile userProfile;
   final List<Playlist> playlists;
 
-  const PlaylistLoaded({
-    required this.userProfile,
-    required this.playlists,
-  });
+  const PlaylistLoaded({required this.userProfile, required this.playlists});
 
   @override
   List<Object?> get props => [userProfile, playlists];

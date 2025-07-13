@@ -7,7 +7,8 @@ abstract class SpotifyPlaylistRemoteDataSource {
 }
 
 @LazySingleton(as: SpotifyPlaylistRemoteDataSource)
-class SpotifyPlaylistRemoteDataSourceImpl implements SpotifyPlaylistRemoteDataSource {
+class SpotifyPlaylistRemoteDataSourceImpl
+    implements SpotifyPlaylistRemoteDataSource {
   final Dio _dio;
   final FlutterSecureStorage _storage;
 
@@ -18,7 +19,7 @@ class SpotifyPlaylistRemoteDataSourceImpl implements SpotifyPlaylistRemoteDataSo
     final token = await _storage.read(key: 'access_token');
     final response = await _dio.get(
       'https://api.spotify.com/v1/me/playlists',
-      options: Options(headers: { 'Authorization': 'Bearer $token' }),
+      options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
     return List<Map<String, dynamic>>.from(response.data['items']);
   }

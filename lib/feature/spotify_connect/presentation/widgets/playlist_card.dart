@@ -25,16 +25,16 @@ class PlaylistCard extends StatelessWidget {
             ),
             child: playlist.imageUrl != null
                 ? Image.network(
-              playlist.imageUrl!,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.music_note,
-                  size: 30,
-                  color: Colors.grey,
-                );
-              },
-            )
+                    playlist.imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(
+                        Icons.music_note,
+                        size: 30,
+                        color: Colors.grey,
+                      );
+                    },
+                  )
                 : const Icon(Icons.music_note, size: 30, color: Colors.grey),
           ),
         ),

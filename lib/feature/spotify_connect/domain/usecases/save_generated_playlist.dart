@@ -11,7 +11,9 @@ class SaveGeneratedPlaylist {
       // Since we're handling this through the CreateSpotifyPlaylist use case
       // in the UI layer, we'll just return a success state
       // In a real app, you'd save to local storage/database here
-      throw UnimplementedError('This is handled by CreateSpotifyPlaylist use case');
+      throw UnimplementedError(
+        'This is handled by CreateSpotifyPlaylist use case',
+      );
     } catch (e) {
       print('❌ Error saving generated playlist: $e');
       rethrow;

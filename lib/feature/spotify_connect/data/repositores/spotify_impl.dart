@@ -42,7 +42,11 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
   }
 
   @override
-  Future<String> createPlaylist(String name, String description, bool isPublic) async {
+  Future<String> createPlaylist(
+    String name,
+    String description,
+    bool isPublic,
+  ) async {
     try {
       return await dataSource.createPlaylist(name, description, isPublic);
     } catch (e) {
@@ -52,7 +56,10 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
   }
 
   @override
-  Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris) async {
+  Future<void> addTracksToPlaylist(
+    String playlistId,
+    List<String> trackUris,
+  ) async {
     try {
       await dataSource.addTracksToPlaylist(playlistId, trackUris);
     } catch (e) {

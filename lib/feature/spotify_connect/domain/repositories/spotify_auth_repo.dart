@@ -1,6 +1,5 @@
 import '../entities/auth_token.dart';
 
-
 abstract class SpotifyAuthRepository {
   /// Triggers login redirect
   Future<void> launchSpotifyAuth();

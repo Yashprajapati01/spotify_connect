@@ -1,4 +1,3 @@
-
 // presentation/bloc/playlist/playlist_event.dart
 import 'package:equatable/equatable.dart';
 

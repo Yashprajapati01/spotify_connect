@@ -19,7 +19,9 @@ class CreateSpotifyPlaylist {
       );
 
       // 2. Add tracks to the playlist
-      final trackUris = generatedPlaylist.tracks.map((track) => track.uri).toList();
+      final trackUris = generatedPlaylist.tracks
+          .map((track) => track.uri)
+          .toList();
       await spotifyRepository.addTracksToPlaylist(spotifyPlaylistId, trackUris);
 
       // 3. Return updated playlist

@@ -90,7 +90,6 @@
 //   }
 // }
 
-
 // data/datasources/spotify_data_source.dart
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -118,7 +117,10 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
   // Store token expiry when getting/refreshing tokens
   Future<void> _storeTokenExpiry(int expiresIn) async {
     final expiryTime = DateTime.now().add(Duration(seconds: expiresIn));
-    await storage.write(key: 'token_expires_at', value: expiryTime.toIso8601String());
+    await storage.write(
+      key: 'token_expires_at',
+      value: expiryTime.toIso8601String(),
+    );
   }
 
   // Check if token is expired
@@ -174,8 +176,8 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
 
   // Execute API calls with automatic retry on 401 errors
   Future<Response<T>> _executeWithRetry<T>(
-      Future<Response<T>> Function() apiCall,
-      ) async {
+    Future<Response<T>> Function() apiCall,
+  ) async {
     try {
       return await apiCall();
     } on DioException catch (e) {
@@ -207,64 +209,70 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
   @override
   Future<UserProfile> getUserProfile() async {
     try {
-      final response = await _executeWithRetry(() async => dio.get(
+      final response = await _executeWithRetry(
+        () async => dio.get(
           'https://api.spotify.com/v1/me',
           options: await _getAuthHeaders(),
-      ));
+        ),
+      );
 
-    final data = response.data;
-    print('✅ Fetched user profile: $data');
-    return UserProfile(
-    id: data['id'] ?? '',
-    displayName: data['display_name'] ?? 'Unknown User',
-    email: data['email'] ?? '',
-    imageUrl: data['images']?.isNotEmpty == true
-    ? data['images'][0]['url']
-        : null,
-    followerCount: data['followers']?['total'] ?? 0,
-    );
+      final data = response.data;
+      print('✅ Fetched user profile: $data');
+      return UserProfile(
+        id: data['id'] ?? '',
+        displayName: data['display_name'] ?? 'Unknown User',
+        email: data['email'] ?? '',
+        imageUrl: data['images']?.isNotEmpty == true
+            ? data['images'][0]['url']
+            : null,
+        followerCount: data['followers']?['total'] ?? 0,
+      );
     } catch (e) {
-    print('❌ Error fetching user profile: $e');
-    rethrow;
+      print('❌ Error fetching user profile: $e');
+      rethrow;
     }
   }
 
   @override
   Future<List<Playlist>> getUserPlaylists() async {
     try {
-      final response = await _executeWithRetry(() async => dio.get(
+      final response = await _executeWithRetry(
+        () async => dio.get(
           'https://api.spotify.com/v1/me/playlists',
           queryParameters: {'limit': 50},
           options: await _getAuthHeaders(),
-      ));
+        ),
+      );
 
-    final data = response.data;
-    final List<dynamic> items = data['items'] ?? [];
+      final data = response.data;
+      final List<dynamic> items = data['items'] ?? [];
 
-    return items.map((item) {
-    return Playlist(
-    id: item['id'] ?? '',
-    name: item['name'] ?? 'Unknown Playlist',
-    description: item['description'],
-    imageUrl: item['images']?.isNotEmpty == true
-    ? item['images'][0]['url']
-        : null,
-    trackCount: item['tracks']?['total'] ?? 0,
-    isPublic: item['public'] ?? false,
-    ownerName: item['owner']?['display_name'] ?? 'Unknown',
-    ownerId: item['owner']?['id'],
-    );
-    }).toList();
+      return items.map((item) {
+        return Playlist(
+          id: item['id'] ?? '',
+          name: item['name'] ?? 'Unknown Playlist',
+          description: item['description'],
+          imageUrl: item['images']?.isNotEmpty == true
+              ? item['images'][0]['url']
+              : null,
+          trackCount: item['tracks']?['total'] ?? 0,
+          isPublic: item['public'] ?? false,
+          ownerName: item['owner']?['display_name'] ?? 'Unknown',
+          ownerId: item['owner']?['id'],
+        );
+      }).toList();
     } catch (e) {
-    print('❌ Error fetching playlists: $e');
-    rethrow;
+      print('❌ Error fetching playlists: $e');
+      rethrow;
     }
   }
+
   @override
   Future<List<Track>> getPlaylistTracks(String playlistId) async {
     try {
       final allTracks = <Track>[];
-      String? nextUrl = 'https://api.spotify.com/v1/playlists/$playlistId/tracks';
+      String? nextUrl =
+          'https://api.spotify.com/v1/playlists/$playlistId/tracks';
 
       while (nextUrl != null) {
         final response = await dio.get(
@@ -279,25 +287,29 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
         for (final item in items) {
           final track = item['track'];
           if (track != null && track['id'] != null) {
-            allTracks.add(Track(
-              id: track['id'],
-              name: track['name'] ?? 'Unknown Track',
-              artistName: track['artists']?.isNotEmpty == true
-                  ? track['artists'][0]['name']
-                  : 'Unknown Artist',
-              albumName: track['album']?['name'] ?? 'Unknown Album',
-              imageUrl: track['album']?['images']?.isNotEmpty == true
-                  ? track['album']['images'][0]['url']
-                  : null,
-              durationMs: track['duration_ms'] ?? 0,
-              uri: track['uri'] ?? '',
-              artists: (track['artists'] as List<dynamic>?)
-                  ?.map((artist) => artist['name'] as String)
-                  .toList() ?? [],
-              previewUrl: track['preview_url'],
-              isExplicit: track['explicit'] ?? false,
-              popularity: track['popularity'] ?? 0,
-            ));
+            allTracks.add(
+              Track(
+                id: track['id'],
+                name: track['name'] ?? 'Unknown Track',
+                artistName: track['artists']?.isNotEmpty == true
+                    ? track['artists'][0]['name']
+                    : 'Unknown Artist',
+                albumName: track['album']?['name'] ?? 'Unknown Album',
+                imageUrl: track['album']?['images']?.isNotEmpty == true
+                    ? track['album']['images'][0]['url']
+                    : null,
+                durationMs: track['duration_ms'] ?? 0,
+                uri: track['uri'] ?? '',
+                artists:
+                    (track['artists'] as List<dynamic>?)
+                        ?.map((artist) => artist['name'] as String)
+                        .toList() ??
+                    [],
+                previewUrl: track['preview_url'],
+                isExplicit: track['explicit'] ?? false,
+                popularity: track['popularity'] ?? 0,
+              ),
+            );
           }
         }
 
@@ -311,6 +323,7 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
       rethrow;
     }
   }
+
   Future<String?> _getUserId() async {
     try {
       final profile = await getUserProfile();
@@ -322,18 +335,18 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
   }
 
   @override
-  Future<String> createPlaylist(String name, String description, bool isPublic) async {
+  Future<String> createPlaylist(
+    String name,
+    String description,
+    bool isPublic,
+  ) async {
     try {
       final userId = await _getUserId();
       if (userId == null) throw Exception('User ID not found');
 
       final response = await dio.post(
         'https://api.spotify.com/v1/users/$userId/playlists',
-        data: {
-          'name': name,
-          'description': description,
-          'public': isPublic,
-        },
+        data: {'name': name, 'description': description, 'public': isPublic},
         options: await _getAuthHeaders(),
       );
 
@@ -347,7 +360,10 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
   }
 
   @override
-  Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris) async {
+  Future<void> addTracksToPlaylist(
+    String playlistId,
+    List<String> trackUris,
+  ) async {
     try {
       // Spotify API allows max 100 tracks per request
       const batchSize = 100;

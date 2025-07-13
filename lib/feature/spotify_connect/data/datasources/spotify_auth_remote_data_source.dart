@@ -108,7 +108,6 @@
 //   }
 // }
 
-
 import 'package:connectspotify/feature/secrets.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -137,13 +136,19 @@ class SpotifyAuthRemoteDataSourceImpl implements SpotifyAuthRemoteDataSource {
   // Helper method to store token expiry
   Future<void> _storeTokenExpiry(int expiresIn) async {
     final expiryTime = DateTime.now().add(Duration(seconds: expiresIn));
-    await storage.write(key: 'token_expires_at', value: expiryTime.toIso8601String());
+    await storage.write(
+      key: 'token_expires_at',
+      value: expiryTime.toIso8601String(),
+    );
   }
 
   @override
   Future<void> authenticateUser() async {
     final pkcePair = PkcePair.generate();
-    await storage.write(key: 'pkce_code_verifier', value: pkcePair.codeVerifier);
+    await storage.write(
+      key: 'pkce_code_verifier',
+      value: pkcePair.codeVerifier,
+    );
 
     final authUrl = Uri.https('accounts.spotify.com', '/authorize', {
       'client_id': _clientId,
@@ -151,7 +156,8 @@ class SpotifyAuthRemoteDataSourceImpl implements SpotifyAuthRemoteDataSource {
       'redirect_uri': _redirectUri,
       'code_challenge_method': 'S256',
       'code_challenge': pkcePair.codeChallenge,
-      'scope': 'user-read-private playlist-read-private playlist-modify-public playlist-modify-private',
+      'scope':
+          'user-read-private playlist-read-private playlist-modify-public playlist-modify-private',
     });
 
     if (!await launchUrl(authUrl, mode: LaunchMode.externalApplication)) {

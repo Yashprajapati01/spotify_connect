@@ -11,10 +11,7 @@ class GenerateMoodPlaylist {
 
   GenerateMoodPlaylist(this.spotifyRepository, this.geminiService);
 
-  Future<GeneratedPlaylist> call(
-      List<String> playlistIds,
-      String mood,
-      ) async {
+  Future<GeneratedPlaylist> call(List<String> playlistIds, String mood) async {
     try {
       // 1. Fetch tracks from selected playlists
       final allTracks = <Track>[];
@@ -25,7 +22,9 @@ class GenerateMoodPlaylist {
 
       // 2. Remove duplicates
       final uniqueTracks = _removeDuplicates(allTracks);
-      print('✅ Collected ${uniqueTracks.length} unique tracks from ${playlistIds.length} playlists');
+      print(
+        '✅ Collected ${uniqueTracks.length} unique tracks from ${playlistIds.length} playlists',
+      );
 
       // 3. Generate playlist using Gemini AI
       final selectedTracks = await geminiService.generatePlaylistFromTracks(

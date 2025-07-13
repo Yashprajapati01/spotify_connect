@@ -7,10 +7,7 @@ import 'package:injectable/injectable.dart';
 final getIt = GetIt.instance;
 
 /// Call this in `main()`
-@InjectableInit(
-  initializerName: 'init',
-  preferRelativeImports: true,
-)
+@InjectableInit(initializerName: 'init', preferRelativeImports: true)
 void configureDependencies() => getIt.init();
 
 /// All module-level singletons

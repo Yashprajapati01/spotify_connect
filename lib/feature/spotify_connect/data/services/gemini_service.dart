@@ -7,26 +7,27 @@ import '../../domain/entities/track.dart';
 
 abstract class GeminiService {
   Future<List<Track>> generatePlaylistFromTracks(
-      List<Track> availableTracks,
-      String mood,
-      int maxTracks,
-      );
+    List<Track> availableTracks,
+    String mood,
+    int maxTracks,
+  );
 }
 
 @LazySingleton(as: GeminiService)
 class GeminiServiceImpl implements GeminiService {
   final Dio dio;
   static final String _apiKey = Secrets.geminiKey;
-  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+  static const String _baseUrl =
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
 
   GeminiServiceImpl(this.dio);
 
   @override
   Future<List<Track>> generatePlaylistFromTracks(
-      List<Track> availableTracks,
-      String mood,
-      int maxTracks,
-      ) async {
+    List<Track> availableTracks,
+    String mood,
+    int maxTracks,
+  ) async {
     try {
       final prompt = _buildPrompt(availableTracks, mood, maxTracks);
 
@@ -36,23 +37,22 @@ class GeminiServiceImpl implements GeminiService {
           'contents': [
             {
               'parts': [
-                {'text': prompt}
-              ]
-            }
+                {'text': prompt},
+              ],
+            },
           ],
           'generationConfig': {
             'temperature': 0.7,
             'topK': 40,
             'topP': 0.95,
             'maxOutputTokens': 8192,
-          }
+          },
         },
-        options: Options(
-          headers: {'Content-Type': 'application/json'},
-        ),
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
-      final responseText = response.data['candidates'][0]['content']['parts'][0]['text'];
+      final responseText =
+          response.data['candidates'][0]['content']['parts'][0]['text'];
       return _parseGeminiResponse(responseText, availableTracks);
     } catch (e) {
       print('❌ Gemini API error: $e');
@@ -61,9 +61,12 @@ class GeminiServiceImpl implements GeminiService {
   }
 
   String _buildPrompt(List<Track> tracks, String mood, int maxTracks) {
-    final trackList = tracks.map((track) =>
-    '${track.id}: "${track.name}" by ${track.artistName} (Album: ${track.albumName}, Popularity: ${track.popularity})'
-    ).join('\n');
+    final trackList = tracks
+        .map(
+          (track) =>
+              '${track.id}: "${track.name}" by ${track.artistName} (Album: ${track.albumName}, Popularity: ${track.popularity})',
+        )
+        .join('\n');
 
     return '''
 You are a music curator AI. I will provide you with a list of songs and a mood. Your task is to select the best songs from the given list that match the specified mood.
@@ -95,7 +98,10 @@ Example response format:
 ''';
   }
 
-  List<Track> _parseGeminiResponse(String responseText, List<Track> availableTracks) {
+  List<Track> _parseGeminiResponse(
+    String responseText,
+    List<Track> availableTracks,
+  ) {
     try {
       final lines = responseText.trim().split('\n');
       final selectedTracks = <Track>[];

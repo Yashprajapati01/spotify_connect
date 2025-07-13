@@ -41,18 +41,22 @@ class PlaylistGenerationBloc
   }
 
   Future<void> _onSaveGeneratedPlaylist(
-      SaveGeneratedPlaylist event,
-      Emitter<PlaylistGenerationState> emit,
-      ) async {
+    SaveGeneratedPlaylist event,
+    Emitter<PlaylistGenerationState> emit,
+  ) async {
     final currentState = state;
     if (currentState is PlaylistGenerationSuccess) {
       emit(PlaylistSaving(currentState.generatedPlaylist));
 
       try {
-        final savedPlaylist = await _createSpotifyPlaylist(currentState.generatedPlaylist);
+        final savedPlaylist = await _createSpotifyPlaylist(
+          currentState.generatedPlaylist,
+        );
         emit(PlaylistSaved(savedPlaylist));
       } catch (e) {
-        emit(PlaylistGenerationError('Failed to save playlist: ${e.toString()}'));
+        emit(
+          PlaylistGenerationError('Failed to save playlist: ${e.toString()}'),
+        );
       }
     }
   }
