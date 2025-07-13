@@ -46,8 +46,6 @@ import '../../feature/spotify_connect/domain/usecases/save_generated_playlist.da
     as _i185;
 import '../../feature/spotify_connect/presentation/bloc/auth/auth_bloc.dart'
     as _i484;
-import '../../feature/spotify_connect/presentation/bloc/playlist_generation/create_playlist.dart'
-    as _i76;
 import '../../feature/spotify_connect/presentation/bloc/playlist_generation/playlist_generation_bloc.dart'
     as _i127;
 import '../../feature/spotify_connect/presentation/bloc/playlist_selection/playlist_selection_bloc.dart'
@@ -94,9 +92,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i808.CreateSpotifyPlaylist>(
       () => _i808.CreateSpotifyPlaylist(gh<_i225.SpotifyRepository>()),
-    );
-    gh.factory<_i76.CreateSpotifyPlaylist>(
-      () => _i76.CreateSpotifyPlaylist(gh<_i225.SpotifyRepository>()),
     );
     gh.factory<_i875.GetUserPlaylists>(
       () => _i875.GetUserPlaylists(gh<_i225.SpotifyRepository>()),
