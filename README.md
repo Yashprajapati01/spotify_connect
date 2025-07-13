@@ -76,8 +76,7 @@ This app follows **Clean Architecture** principles with clear separation of conc
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/spotify-connect-flutter.git
-   cd spotify-connect-flutter
+   git clone https://github.com/Yashprajapati01/spotify_connect.git
    ```
 
 2. **Install dependencies**
@@ -213,8 +212,6 @@ The app leverages Google's Gemini AI to create intelligent playlist recommendati
 lib/
 ├── core/                           # Core functionality
 │   ├── colors/                     # App color constants
-│   ├── error/                      # Error handling
-│   ├── network/                    # Network configuration
 │   └── injection/                  # Dependency injection
 ├── feature/
 │   └── spotify_connect/
@@ -325,9 +322,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Flutter Team** for the amazing framework
 - **Open Source Community** for the incredible packages
 
-## 📞 Support
-- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/spotify-connect-flutter/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/spotify-connect-flutter/discussions)
 
 ---
 
