@@ -105,6 +105,20 @@ abstract class SpotifyDataSource {
   Future<List<Track>> getPlaylistTracks(String playlistId);
   Future<String> createPlaylist(String name, String description, bool isPublic);
   Future<void> addTracksToPlaylist(String playlistId, List<String> trackUris);
+
+  // New methods for Explore Mode
+  Future<List<Track>> getRecommendations({
+    List<String>? seedTracks,
+    List<String>? seedArtists,
+    List<String>? seedGenres,
+    double? targetEnergy,
+    double? targetDanceability,
+    double? targetValence,
+    int limit = 20,
+  });
+
+  Future<Map<String, dynamic>> getAudioFeatures(String trackId);
+  Future<List<String>> getAvailableGenres();
 }
 
 @LazySingleton(as: SpotifyDataSource)
@@ -381,6 +395,121 @@ class SpotifyDataSourceImpl implements SpotifyDataSource {
       print('✅ Added ${trackUris.length} tracks to playlist $playlistId');
     } catch (e) {
       print('❌ Error adding tracks to playlist: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Track>> getRecommendations({
+    List<String>? seedTracks,
+    List<String>? seedArtists,
+    List<String>? seedGenres,
+    double? targetEnergy,
+    double? targetDanceability,
+    double? targetValence,
+    int limit = 20,
+  }) async {
+    try {
+      final queryParams = <String, dynamic>{'limit': limit};
+
+      // Add seed parameters
+      if (seedTracks != null && seedTracks.isNotEmpty) {
+        queryParams['seed_tracks'] = seedTracks.take(5).join(',');
+      }
+      if (seedArtists != null && seedArtists.isNotEmpty) {
+        queryParams['seed_artists'] = seedArtists.take(5).join(',');
+      }
+      if (seedGenres != null && seedGenres.isNotEmpty) {
+        queryParams['seed_genres'] = seedGenres.take(5).join(',');
+      }
+
+      // Add target audio features
+      if (targetEnergy != null) {
+        queryParams['target_energy'] = targetEnergy;
+      }
+      if (targetDanceability != null) {
+        queryParams['target_danceability'] = targetDanceability;
+      }
+      if (targetValence != null) {
+        queryParams['target_valence'] = targetValence;
+      }
+
+      final response = await _executeWithRetry(
+        () async => dio.get(
+          'https://api.spotify.com/v1/recommendations',
+          queryParameters: queryParams,
+          options: await _getAuthHeaders(),
+        ),
+      );
+
+      final data = response.data;
+      final List<dynamic> tracks = data['tracks'] ?? [];
+
+      final recommendations = tracks.map((track) {
+        return Track(
+          id: track['id'],
+          name: track['name'] ?? 'Unknown Track',
+          artistName: track['artists']?.isNotEmpty == true
+              ? track['artists'][0]['name']
+              : 'Unknown Artist',
+          albumName: track['album']?['name'] ?? 'Unknown Album',
+          imageUrl: track['album']?['images']?.isNotEmpty == true
+              ? track['album']['images'][0]['url']
+              : null,
+          durationMs: track['duration_ms'] ?? 0,
+          uri: track['uri'] ?? '',
+          artists:
+              (track['artists'] as List<dynamic>?)
+                  ?.map((artist) => artist['name'] as String)
+                  .toList() ??
+              [],
+          previewUrl: track['preview_url'],
+          isExplicit: track['explicit'] ?? false,
+          popularity: track['popularity'] ?? 0,
+        );
+      }).toList();
+
+      print('✅ Fetched ${recommendations.length} recommendations');
+      return recommendations;
+    } catch (e) {
+      print('❌ Error getting recommendations: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAudioFeatures(String trackId) async {
+    try {
+      final response = await _executeWithRetry(
+        () async => dio.get(
+          'https://api.spotify.com/v1/audio-features/$trackId',
+          options: await _getAuthHeaders(),
+        ),
+      );
+
+      return response.data ?? {};
+    } catch (e) {
+      print('❌ Error getting audio features: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<String>> getAvailableGenres() async {
+    try {
+      final response = await _executeWithRetry(
+        () async => dio.get(
+          'https://api.spotify.com/v1/recommendations/available-genre-seeds',
+          options: await _getAuthHeaders(),
+        ),
+      );
+
+      final data = response.data;
+      final List<dynamic> genres = data['genres'] ?? [];
+
+      return genres.cast<String>();
+    } catch (e) {
+      print('❌ Error getting available genres: $e');
       rethrow;
     }
   }

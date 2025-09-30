@@ -1,5 +1,5 @@
-// dart format width=80
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -26,14 +26,20 @@ import '../../feature/spotify_connect/data/repositores/spotify_repo_impl.dart'
     as _i836;
 import '../../feature/spotify_connect/data/services/gemini_service.dart'
     as _i411;
+import '../../feature/spotify_connect/data/services/taste_profile_cache_service.dart'
+    as _i248;
 import '../../feature/spotify_connect/domain/repositories/spotify.dart'
     as _i225;
 import '../../feature/spotify_connect/domain/repositories/spotify_auth_repo.dart'
     as _i399;
+import '../../feature/spotify_connect/domain/usecases/analyze_user_taste.dart'
+    as _i21;
 import '../../feature/spotify_connect/domain/usecases/authenticate_user.dart'
     as _i1044;
 import '../../feature/spotify_connect/domain/usecases/create_playlist.dart'
     as _i808;
+import '../../feature/spotify_connect/domain/usecases/generate_enhanced_playlist.dart'
+    as _i202;
 import '../../feature/spotify_connect/domain/usecases/generate_mood_playlist.dart'
     as _i785;
 import '../../feature/spotify_connect/domain/usecases/get_user_playlist.dart'
@@ -46,6 +52,8 @@ import '../../feature/spotify_connect/domain/usecases/save_generated_playlist.da
     as _i185;
 import '../../feature/spotify_connect/presentation/bloc/auth/auth_bloc.dart'
     as _i484;
+import '../../feature/spotify_connect/presentation/bloc/explore_mode/explore_mode_bloc.dart'
+    as _i22;
 import '../../feature/spotify_connect/presentation/bloc/playlist_generation/playlist_generation_bloc.dart'
     as _i127;
 import '../../feature/spotify_connect/presentation/bloc/playlist_selection/playlist_selection_bloc.dart'
@@ -93,6 +101,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i808.CreateSpotifyPlaylist>(
       () => _i808.CreateSpotifyPlaylist(gh<_i225.SpotifyRepository>()),
     );
+    gh.factory<_i21.AnalyzeUserTaste>(
+      () => _i21.AnalyzeUserTaste(gh<_i225.SpotifyRepository>()),
+    );
+    gh.factory<_i202.GenerateEnhancedPlaylist>(
+      () => _i202.GenerateEnhancedPlaylist(gh<_i225.SpotifyRepository>()),
+    );
+    gh.factory<_i248.TasteProfileCacheService>(
+      () => _i248.TasteProfileCacheService(gh<_i558.FlutterSecureStorage>()),
+    );
     gh.factory<_i875.GetUserPlaylists>(
       () => _i875.GetUserPlaylists(gh<_i225.SpotifyRepository>()),
     );
@@ -116,17 +133,29 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i875.GetUserPlaylists>(),
       ),
     );
-    gh.factory<_i1044.AuthenticateUserWithCode>(
-      () => _i1044.AuthenticateUserWithCode(gh<_i399.SpotifyAuthRepository>()),
-    );
-    gh.factory<_i980.LaunchSpotifyAuth>(
-      () => _i980.LaunchSpotifyAuth(gh<_i399.SpotifyAuthRepository>()),
+    gh.factory<_i22.ExploreModeBloc>(
+      () => _i22.ExploreModeBloc(
+        gh<_i21.AnalyzeUserTaste>(),
+        gh<_i202.GenerateEnhancedPlaylist>(),
+        gh<_i808.CreateSpotifyPlaylist>(),
+        gh<_i875.GetUserPlaylists>(),
+        gh<_i248.TasteProfileCacheService>(),
+      ),
     );
     gh.factory<_i127.PlaylistGenerationBloc>(
       () => _i127.PlaylistGenerationBloc(
         gh<_i785.GenerateMoodPlaylist>(),
         gh<_i808.CreateSpotifyPlaylist>(),
+        gh<_i21.AnalyzeUserTaste>(),
+        gh<_i202.GenerateEnhancedPlaylist>(),
+        gh<_i875.GetUserPlaylists>(),
       ),
+    );
+    gh.factory<_i1044.AuthenticateUserWithCode>(
+      () => _i1044.AuthenticateUserWithCode(gh<_i399.SpotifyAuthRepository>()),
+    );
+    gh.factory<_i980.LaunchSpotifyAuth>(
+      () => _i980.LaunchSpotifyAuth(gh<_i399.SpotifyAuthRepository>()),
     );
     gh.factory<_i484.AuthBloc>(
       () => _i484.AuthBloc(

@@ -67,4 +67,50 @@ class SpotifyRepositoryImpl implements SpotifyRepository {
       rethrow;
     }
   }
+
+  @override
+  Future<List<Track>> getRecommendations({
+    List<String>? seedTracks,
+    List<String>? seedArtists,
+    List<String>? seedGenres,
+    double? targetEnergy,
+    double? targetDanceability,
+    double? targetValence,
+    int limit = 20,
+  }) async {
+    try {
+      return await dataSource.getRecommendations(
+        seedTracks: seedTracks,
+        seedArtists: seedArtists,
+        seedGenres: seedGenres,
+        targetEnergy: targetEnergy,
+        targetDanceability: targetDanceability,
+        targetValence: targetValence,
+        limit: limit,
+      );
+    } catch (e) {
+      print('❌ Repository error - getRecommendations: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAudioFeatures(String trackId) async {
+    try {
+      return await dataSource.getAudioFeatures(trackId);
+    } catch (e) {
+      print('❌ Repository error - getAudioFeatures: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<String>> getAvailableGenres() async {
+    try {
+      return await dataSource.getAvailableGenres();
+    } catch (e) {
+      print('❌ Repository error - getAvailableGenres: $e');
+      rethrow;
+    }
+  }
 }

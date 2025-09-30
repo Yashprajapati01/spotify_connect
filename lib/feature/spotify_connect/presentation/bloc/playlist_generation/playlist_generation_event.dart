@@ -23,6 +23,21 @@ class GeneratePlaylist extends PlaylistGenerationEvent {
   List<Object> get props => [selectedPlaylistIds, mood];
 }
 
+class GenerateEnhancedPlaylistEvent extends PlaylistGenerationEvent {
+  final List<String> selectedPlaylistIds;
+  final String mood;
+  final bool exploreMode;
+
+  const GenerateEnhancedPlaylistEvent({
+    required this.selectedPlaylistIds,
+    required this.mood,
+    this.exploreMode = true,
+  });
+
+  @override
+  List<Object> get props => [selectedPlaylistIds, mood, exploreMode];
+}
+
 class SaveGeneratedPlaylist extends PlaylistGenerationEvent {
   final String playlistId;
 

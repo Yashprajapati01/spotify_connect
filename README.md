@@ -37,6 +37,7 @@
 - 👤 **User Profile Management** - Display user information and preferences
 - 📋 **Playlist Discovery** - Browse and explore your Spotify playlists
 - 🎨 **AI-Powered Playlist Generation** - Create custom playlists based on mood, genre, or description
+- 🚀 **Explore Mode** - Advanced AI-powered playlist enhancement with taste analysis
 - 💾 **Secure Token Storage** - Encrypted credential management
 - 🔄 **Real-time Sync** - Stay updated with your Spotify account
 
@@ -206,6 +207,53 @@ The app leverages Google's Gemini AI to create intelligent playlist recommendati
 - "Make a romantic playlist for dinner"
 - "Generate 90s rock classics"
 
+## 🔍 Explore Mode & Analyze Me
+
+### Explore Mode 🚀
+A simple toggle switch on the home page that enhances your regular playlist generation with AI-powered music discovery.
+
+**How it works:**
+1. **Toggle ON** the Explore Mode switch on the home page
+2. **Select playlists** as you normally would
+3. **Enter your mood** in the text input
+4. **Generate** - The AI will analyze your taste and add discovered songs to your playlist
+
+When Explore Mode is enabled:
+- ✨ **Smart Discovery**: Finds new songs based on your listening patterns
+- 🎯 **Taste Analysis**: Analyzes your selected playlists in real-time
+- 🎵 **Enhanced Playlists**: Combines your tracks with AI recommendations
+- 🔄 **Seamless Integration**: Works with the existing playlist generation flow
+
+### Analyze Me 🧠
+A dedicated feature for deep music taste analysis and insights.
+
+**Access:** Tap the brain icon (🧠) in the top-right corner of the home screen
+
+**What you get:**
+- 🧬 **Music DNA Profile**: Visual representation of your audio preferences
+- 📊 **Audio Features Analysis**: Energy, danceability, and mood patterns
+- 🎭 **Genre Universe**: Your preferred music genres and styles
+- 💡 **Listening Insights**: Music diversity and personality analysis
+- 🎯 **Music Personality**: AI-generated description of your listening style
+
+### Example Workflows
+
+**Explore Mode:**
+```
+1. Toggle Explore Mode ON
+2. Select your "Chill Vibes" and "Study Music" playlists
+3. Enter mood: "focused and calm"
+4. Hit generate → Get 30 songs (your tracks + AI discoveries)
+```
+
+**Analyze Me:**
+```
+1. Tap the brain icon in the app bar
+2. Wait for analysis to complete
+3. Discover your music DNA and personality
+4. Learn about your listening patterns and preferences
+```
+
 ## 📂 Project Structure
 
 ```
@@ -278,9 +326,17 @@ test/
 - [x] AI Playlist Generation
 - [x] Secure Token Storage
 
-### Phase 2: Enhanced Features 🚧
+### Phase 2: Enhanced Features ✅
+- [x] **Explore Mode** - AI-powered playlist enhancement
+- [x] **User Taste Analysis** - Analyze listening patterns and preferences
+- [x] **Smart Recommendations** - Discover new music based on your taste
+- [x] **Enhanced Playlist Creation** - Combine selected playlists with AI discoveries
+
+### Phase 3: Advanced Features 🚧
 - [ ] Playlist Detail View with Track Previews
 - [ ] Playlist Editing Capabilities
+- [ ] Social Features - Share and collaborate on playlists
+- [ ] Advanced Audio Analysis - Tempo, key, and mood matching
 
 ## 🤝 Contributing
 

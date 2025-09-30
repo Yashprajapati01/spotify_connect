@@ -1,4 +1,3 @@
-
 import 'package:connectspotify/feature/spotify_connect/presentation/bloc/auth/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +15,7 @@ import '../bloc/playlist_generation/playlist_generation_event.dart';
 import '../bloc/playlist_generation/playlist_generation_state.dart';
 import '../bloc/auth/auth_bloc.dart';
 import '../bloc/auth/auth_event.dart';
+import 'analyze_me_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -48,6 +48,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   final FocusNode moodFocusNode = FocusNode();
   final ScrollController scrollController = ScrollController();
   bool showGeneratedPlaylist = false;
+  bool isExploreModeEnabled = false;
 
   @override
   void initState() {
@@ -209,17 +210,17 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                             ),
                             image: userProfile.imageUrl != null
                                 ? DecorationImage(
-                              image: NetworkImage(userProfile.imageUrl!),
-                              fit: BoxFit.cover,
-                            )
+                                    image: NetworkImage(userProfile.imageUrl!),
+                                    fit: BoxFit.cover,
+                                  )
                                 : null,
                           ),
                           child: userProfile.imageUrl == null
                               ? const Icon(
-                            Icons.person,
-                            size: 25,
-                            color: AppColors.spotifyWhite,
-                          )
+                                  Icons.person,
+                                  size: 25,
+                                  color: AppColors.spotifyWhite,
+                                )
                               : null,
                         ),
                         const SizedBox(width: 16),
@@ -257,6 +258,13 @@ class _HomeScreenContentState extends State<HomeScreenContent>
             ),
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.psychology, color: AppColors.spotifyWhite),
+              onPressed: () => _navigateToAnalyzeMe(
+                userProfile != null ? [] : [],
+              ), // Will get playlists from state
+              tooltip: 'Analyze Me',
+            ),
             IconButton(
               icon: const Icon(Icons.logout, color: AppColors.spotifyWhite),
               onPressed: () {
@@ -396,6 +404,81 @@ class _HomeScreenContentState extends State<HomeScreenContent>
               ],
             ),
           ),
+
+          // Explore Mode Toggle
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.spotifyLightGrey,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isExploreModeEnabled
+                    ? AppColors.spotifyGreen.withOpacity(0.5)
+                    : Colors.transparent,
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: isExploreModeEnabled
+                        ? AppColors.spotifyGreen.withOpacity(0.2)
+                        : AppColors.spotifyTextGrey.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.explore,
+                    color: isExploreModeEnabled
+                        ? AppColors.spotifyGreen
+                        : AppColors.spotifyTextGrey,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Explore Mode',
+                        style: TextStyle(
+                          color: isExploreModeEnabled
+                              ? AppColors.spotifyGreen
+                              : AppColors.spotifyWhite,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'SF',
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Discover new songs based on your taste',
+                        style: TextStyle(
+                          color: AppColors.spotifyTextGrey,
+                          fontSize: 12,
+                          fontFamily: 'SF',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch(
+                  value: isExploreModeEnabled,
+                  onChanged: (value) {
+                    setState(() {
+                      isExploreModeEnabled = value;
+                    });
+                  },
+                  activeColor: AppColors.spotifyGreen,
+                  inactiveThumbColor: AppColors.spotifyTextGrey,
+                  inactiveTrackColor: AppColors.spotifyBlack,
+                ),
+              ],
+            ),
+          ),
           // Grid view of playlists
           GridView.builder(
             shrinkWrap: true,
@@ -460,20 +543,20 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                       ),
                       child: playlist.imageUrl != null
                           ? Image.network(
-                        playlist.imageUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                        const Icon(
-                          Icons.music_note,
-                          color: AppColors.spotifyTextGrey,
-                          size: 40,
-                        ),
-                      )
+                              playlist.imageUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  const Icon(
+                                    Icons.music_note,
+                                    color: AppColors.spotifyTextGrey,
+                                    size: 40,
+                                  ),
+                            )
                           : const Icon(
-                        Icons.music_note,
-                        color: AppColors.spotifyTextGrey,
-                        size: 40,
-                      ),
+                              Icons.music_note,
+                              color: AppColors.spotifyTextGrey,
+                              size: 40,
+                            ),
                     ),
                   ),
                 ),
@@ -552,10 +635,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                 Text(
                   'Generated Playlist',
                   style: TextStyle(
-                      color: AppColors.spotifyWhite,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'SF'
+                    color: AppColors.spotifyWhite,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'SF',
                   ),
                 ),
               ],
@@ -606,7 +689,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
         icon: const Icon(Icons.arrow_back, color: AppColors.spotifyGreen),
         label: const Text(
           'Back to Playlist Selection',
-          style: TextStyle(color: AppColors.spotifyGreen,fontFamily: 'SF'),
+          style: TextStyle(color: AppColors.spotifyGreen, fontFamily: 'SF'),
         ),
       ),
     );
@@ -650,7 +733,9 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                       fontFamily: 'SF',
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Describe your mood or vibe...',
+                      hintText: isExploreModeEnabled
+                          ? 'Describe your mood (Explore Mode ON)...'
+                          : 'Describe your mood or vibe...',
                       hintStyle: TextStyle(
                         color: AppColors.spotifyTextGrey,
                         fontFamily: 'SF',
@@ -681,9 +766,11 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: _canGeneratePlaylist() ? _generatePlaylist : null,
-                      icon: const Icon(
-                        Icons.send,
+                      onPressed: _canGeneratePlaylist()
+                          ? _generatePlaylist
+                          : null,
+                      icon: Icon(
+                        isExploreModeEnabled ? Icons.explore : Icons.send,
                         color: AppColors.spotifyWhite,
                         size: 20,
                       ),
@@ -710,7 +797,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
             SizedBox(height: 16),
             Text(
               'Creating your perfect playlist...',
-              style: TextStyle(color: AppColors.spotifyTextGrey,fontFamily: 'SF'),
+              style: TextStyle(
+                color: AppColors.spotifyTextGrey,
+                fontFamily: 'SF',
+              ),
             ),
           ],
         ),
@@ -719,10 +809,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   }
 
   Widget _buildGeneratedPlaylist(
-      GeneratedPlaylist playlist, {
-        bool isSaving = false,
-        bool isSaved = false,
-      }) {
+    GeneratedPlaylist playlist, {
+    bool isSaving = false,
+    bool isSaved = false,
+  }) {
     return Column(
       children: [
         // Playlist Header
@@ -737,19 +827,19 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                     Text(
                       playlist.name,
                       style: const TextStyle(
-                          color: AppColors.spotifyWhite,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'SF'
+                        color: AppColors.spotifyWhite,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'SF',
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       playlist.description,
                       style: TextStyle(
-                          color: AppColors.spotifyTextGrey,
-                          fontSize: 14,
-                          fontFamily: 'SF'
+                        color: AppColors.spotifyTextGrey,
+                        fontSize: 14,
+                        fontFamily: 'SF',
                       ),
                     ),
                   ],
@@ -783,7 +873,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                     SizedBox(width: 8),
                     Text(
                       'Saving...',
-                      style: TextStyle(color: AppColors.spotifyTextGrey,fontFamily: 'SF'),
+                      style: TextStyle(
+                        color: AppColors.spotifyTextGrey,
+                        fontFamily: 'SF',
+                      ),
                     ),
                   ],
                 ),
@@ -795,7 +888,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
                     SizedBox(width: 8),
                     Text(
                       'Saved!',
-                      style: TextStyle(color: AppColors.spotifyGreen,fontFamily: 'SF'),
+                      style: TextStyle(
+                        color: AppColors.spotifyGreen,
+                        fontFamily: 'SF',
+                      ),
                     ),
                   ],
                 ),
@@ -833,40 +929,48 @@ class _HomeScreenContentState extends State<HomeScreenContent>
             borderRadius: BorderRadius.circular(4),
             child: track.imageUrl != null
                 ? Image.network(
-              track.imageUrl!,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => const Icon(
-                Icons.music_note,
-                color: AppColors.spotifyTextGrey,
-                size: 20,
-              ),
-            )
+                    track.imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const Icon(
+                      Icons.music_note,
+                      color: AppColors.spotifyTextGrey,
+                      size: 20,
+                    ),
+                  )
                 : const Icon(
-              Icons.music_note,
-              color: AppColors.spotifyTextGrey,
-              size: 20,
-            ),
+                    Icons.music_note,
+                    color: AppColors.spotifyTextGrey,
+                    size: 20,
+                  ),
           ),
         ),
         title: Text(
           track.name,
           style: const TextStyle(
-              color: AppColors.spotifyWhite,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'SF'
+            color: AppColors.spotifyWhite,
+            fontWeight: FontWeight.w500,
+            fontFamily: 'SF',
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
           '${track.artistName} • ${track.albumName}',
-          style: TextStyle(color: AppColors.spotifyTextGrey, fontSize: 12,fontFamily: 'SF'),
+          style: TextStyle(
+            color: AppColors.spotifyTextGrey,
+            fontSize: 12,
+            fontFamily: 'SF',
+          ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         trailing: Text(
           _formatDuration(track.durationMs),
-          style: TextStyle(color: AppColors.spotifyTextGrey, fontSize: 12,fontFamily: 'SF'),
+          style: TextStyle(
+            color: AppColors.spotifyTextGrey,
+            fontSize: 12,
+            fontFamily: 'SF',
+          ),
         ),
       ),
     );
@@ -888,7 +992,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
             Text(
               'Select playlists and describe your mood\nto generate a personalized playlist',
               textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.spotifyTextGrey,fontFamily: 'SF'),
+              style: TextStyle(
+                color: AppColors.spotifyTextGrey,
+                fontFamily: 'SF',
+              ),
             ),
           ],
         ),
@@ -908,7 +1015,7 @@ class _HomeScreenContentState extends State<HomeScreenContent>
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.red,fontFamily: 'SF'),
+              style: const TextStyle(color: Colors.red, fontFamily: 'SF'),
             ),
           ],
         ),
@@ -925,7 +1032,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
           const SizedBox(height: 16),
           Text(
             'Error: $message',
-            style: const TextStyle(color: AppColors.spotifyTextGrey,fontFamily: 'SF'),
+            style: const TextStyle(
+              color: AppColors.spotifyTextGrey,
+              fontFamily: 'SF',
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
@@ -945,10 +1055,10 @@ class _HomeScreenContentState extends State<HomeScreenContent>
   }
 
   void _showCustomSnackBar(
-      BuildContext context,
-      String message, {
-        bool isError = false,
-      }) {
+    BuildContext context,
+    String message, {
+    bool isError = false,
+  }) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -970,12 +1080,24 @@ class _HomeScreenContentState extends State<HomeScreenContent>
 
     moodFocusNode.unfocus();
 
-    context.read<PlaylistGenerationBloc>().add(
-      GeneratePlaylist(
-        selectedPlaylistIds: selectedPlaylistIds.toList(),
-        mood: moodController.text.trim(),
-      ),
-    );
+    if (isExploreModeEnabled) {
+      // Use enhanced playlist generation with taste analysis
+      context.read<PlaylistGenerationBloc>().add(
+        GenerateEnhancedPlaylistEvent(
+          selectedPlaylistIds: selectedPlaylistIds.toList(),
+          mood: moodController.text.trim(),
+          exploreMode: true,
+        ),
+      );
+    } else {
+      // Use regular playlist generation
+      context.read<PlaylistGenerationBloc>().add(
+        GeneratePlaylist(
+          selectedPlaylistIds: selectedPlaylistIds.toList(),
+          mood: moodController.text.trim(),
+        ),
+      );
+    }
   }
 
   void _saveToSpotify(GeneratedPlaylist playlist) {
@@ -989,5 +1111,21 @@ class _HomeScreenContentState extends State<HomeScreenContent>
     final minutes = duration.inMinutes;
     final seconds = duration.inSeconds % 60;
     return '${minutes}:${seconds.toString().padLeft(2, '0')}';
+  }
+
+  void _navigateToAnalyzeMe(List<Playlist> playlists) {
+    // Get playlists from current state
+    final currentState = context.read<PlaylistBloc>().state;
+    List<Playlist> userPlaylists = [];
+
+    if (currentState is PlaylistLoaded) {
+      userPlaylists = currentState.playlists;
+    }
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AnalyzeMeScreen(userPlaylists: userPlaylists),
+      ),
+    );
   }
 }
